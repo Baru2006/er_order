@@ -3,255 +3,547 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order - EasyRecharge MM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>EasyRecharge MM - Order</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #007BFF;
+            --accent-color: #0a2239;
+            --background-color: #f6f9ff;
+            --text-color: #333;
+            --light-text-color: #666;
+            --card-bg: #ffffff;
+            --border-color: #e0e6f1;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: 'Poppins', 'Segoe UI', sans-serif;
-            background-color: #f0f2f5;
-        }
-        .brand-orange { color: #ff6600; }
-        .bg-brand-orange { background-color: #ff6600; }
-        .border-brand-orange { border-color: #ff6600; }
-        .header {
-            background-color: #000000;
-            color: white;
-            padding: 1rem;
+            font-family: var(--font-family);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
             display: flex;
+            flex-direction: column;
             align-items: center;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            min-height: 100vh;
+            padding: 1rem;
         }
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #ff6600;
-        }
+
         .container {
+            width: 100%;
             max-width: 600px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            margin: 0 auto;
         }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .header img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            padding: 5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            color: var(--accent-color);
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: var(--light-text-color);
+        }
+
         .card {
-            background-color: white;
-            border-radius: 0.75rem;
-            padding: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 123, 255, 0.1);
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
             margin-bottom: 1.5rem;
         }
-        .btn {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.2s ease-in-out;
-            border: 1px solid transparent;
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--accent-color);
         }
-        .btn-primary {
-            background-color: #000000;
-            color: white;
-        }
-        .btn-primary:hover {
-            background-color: #333;
-        }
-        .btn-outline {
-            background-color: #ffffff;
-            color: #333;
-            border-color: #ddd;
-        }
-        .btn-outline.active {
-            border-color: #ff6600;
-            color: #ff6600;
-            background-color: #fff7f2;
-            box-shadow: 0 0 0 2px #ffcbae;
-        }
-        .service-scroller {
-            display: flex;
-            overflow-x: auto;
-            padding-bottom: 1rem;
-            scrollbar-width: none; /* Firefox */
-        }
-        .service-scroller::-webkit-scrollbar {
-            display: none; /* Safari and Chrome */
-        }
-        .service-btn {
-            flex: 0 0 auto;
-            margin-right: 0.75rem;
-            min-width: 100px;
-        }
-        .form-input {
+
+        .input, .readonly-input {
             width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 0.5rem;
-            padding: 0.75rem;
-            transition: border-color 0.2s;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: var(--font-family);
+            transition: border-color 0.3s, box-shadow 0.3s;
         }
-        .form-input:focus {
+
+        .input:focus {
             outline: none;
-            border-color: #ff6600;
-            box-shadow: 0 0 0 2px #ffcbae;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
         }
-        .copy-btn {
+
+        .readonly-input {
+            background-color: #f0f2f5;
+            cursor: not-allowed;
+        }
+
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .btn-toggle {
+            padding: 0.75rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .btn-toggle:hover {
+            background-color: #f0f8ff;
+            border-color: var(--primary-color);
+        }
+
+        .btn-toggle.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .phone-group {
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
+            gap: 0.75rem;
+        }
+
+        .phone-group .readonly-input {
+            flex-grow: 1;
+        }
+
+        .copy-btn {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
             background-color: #f0f2f5;
-            color: #333;
+            color: var(--primary-color);
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.2s;
+            font-weight: 600;
+            transition: background-color 0.3s;
         }
+        
         .copy-btn:hover {
-            background-color: #e2e8f0;
+            background-color: #e2e6ea;
         }
-        #toast {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: #2d3748;
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 10px;
+            border: none;
+            background-color: var(--primary-color);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s;
-            z-index: 50;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
         }
-        #toast.show {
+
+        .submit-btn:hover:not(:disabled) {
+            background-color: #0069d9;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .submit-btn:disabled {
+            background-color: #a0c7ff;
+            cursor: not-allowed;
+        }
+        
+        .submit-btn.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        .submit-btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin-top: -10px;
+            margin-left: -10px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transform: translateX(calc(100% + 20px));
+            transition: transform 0.5s ease-in-out;
+            z-index: 1000;
+            opacity: 0;
+        }
+
+        .toast.show {
+            transform: translateX(0);
             opacity: 1;
-            visibility: visible;
+        }
+
+        .toast.success { background-color: var(--success-color); }
+        .toast.error { background-color: var(--error-color); }
+
+        #services-container {
+            display: none;
+            margin-top: 1.5rem;
         }
     </style>
 </head>
 <body>
 
-    <header class="header">
-        <div class="logo">EasyRecharge<span class="brand-orange">MM</span></div>
-    </header>
-
     <div class="container">
-        <div class="card">
-            <h2 class="text-lg font-semibold text-gray-700">User ID</h2>
-            <p id="userId" class="text-xl font-bold brand-orange bg-gray-100 p-2 rounded-md text-center">Loading...</p>
-        </div>
+        <header class="header">
+            <img src="https://i.ibb.co/C0W1T3F/logo.png" alt="EasyRecharge MM Logo">
+            <h1>EasyRecharge MM</h1>
+            <p>📦 Place Your Order</p>
+        </header>
 
-        <!-- Order Form -->
-        <form id="orderForm">
-            <!-- Category Selection -->
-            <div class="card">
-                <label class="block text-lg font-semibold text-gray-800 mb-4">1. Select Category</label>
-                <div id="categoryContainer" class="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    <!-- Buttons are injected by JS -->
+        <main class="card">
+            <form id="orderForm">
+                <div class="form-group">
+                    <label for="userId">Your User ID</label>
+                    <input type="text" id="userId" name="userId" class="readonly-input" readonly>
                 </div>
-            </div>
 
-            <!-- Service Selection -->
-            <div class="card" id="serviceCard" style="display: none;">
-                <label class="block text-lg font-semibold text-gray-800 mb-4">2. Select Service</label>
-                <div id="serviceContainer" class="service-scroller">
-                    <!-- Service buttons injected by JS -->
-                </div>
-                <div id="priceDisplay" class="mt-4 text-lg font-semibold text-gray-700"></div>
-            </div>
-
-            <!-- Quantity & Total -->
-            <div class="card" id="detailsCard" style="display: none;">
-                <label class="block text-lg font-semibold text-gray-800 mb-4">3. Details</label>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label for="quantity" class="block text-sm font-medium text-gray-600 mb-1">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" value="1" min="1" class="form-input">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-600 mb-1">Total Price</label>
-                        <p id="totalPrice" class="text-2xl font-bold brand-orange">0 MMK</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Payment Section -->
-            <div class="card" id="paymentCard" style="display: none;">
-                <label class="block text-lg font-semibold text-gray-800 mb-4">4. Payment</label>
-                <p class="text-sm text-gray-500 mb-3">Please send the total amount to the number below.</p>
-                <div class="bg-orange-50 p-4 rounded-lg border border-orange-200">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-xl font-bold text-gray-800" id="phoneNumber">09791134604</p>
-                            <p class="text-gray-600 font-medium">Chit Ko Ko Lwin</p>
-                        </div>
-                        <button type="button" class="copy-btn" onclick="copyPhoneNumber()">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                            <span class="ml-2">Copy</span>
-                        </button>
+                <div class="form-group">
+                    <label>Select Category</label>
+                    <div id="category-group" class="btn-group">
+                        <button type="button" class="btn-toggle" data-category="SIM/Package">SIM/Package</button>
+                        <button type="button" class="btn-toggle" data-category="Games TopUp">Games TopUp</button>
+                        <button type="button" class="btn-toggle" data-category="SMM">SMM</button>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <label class="block text-md font-semibold text-gray-700 mb-3">Payment Method</label>
-                    <div id="paymentMethodContainer" class="flex gap-3">
-                        <button type="button" class="btn btn-outline flex-1" data-value="Wave">Wave</button>
-                        <button type="button" class="btn btn-outline flex-1" data-value="KBZPay">KBZPay</button>
+                <div id="services-container">
+                    <div class="form-group">
+                        <label>Select Service</label>
+                        <div id="service-group" class="btn-group"></div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="qty">Quantity</label>
+                    <input type="number" id="qty" name="qty" class="input" min="1" value="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="totalPrice">Total Price</label>
+                    <input type="text" id="totalPrice" name="totalPrice" class="readonly-input" value="0 MMK" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Phone</label>
+                    <div class="phone-group">
+                        <input type="text" id="phone" name="phone" value="Chit Ko Ko Lwin - 09791134604" class="readonly-input" readonly>
+                        <button type="button" class="copy-btn" id="copyPhoneBtn">Copy</button>
                     </div>
                 </div>
 
-                <div class="mt-6">
-                    <label for="transactionId" class="block text-md font-semibold text-gray-700 mb-2">Transaction ID</label>
-                    <input type="text" id="transactionId" name="transactionId" class="form-input" placeholder="Enter your payment transaction ID" required>
+                <div class="form-group">
+                    <label>Payment Method</label>
+                    <div id="payment-method-group" class="btn-group">
+                        <button type="button" class="btn-toggle" data-payment="Wave">Wave</button>
+                        <button type="button" class="btn-toggle" data-payment="KBZPay">KBZPay</button>
+                        <button type="button" class="btn-toggle" data-payment="AYAPay">AYAPay</button>
+                        <button type="button" class="btn-toggle" data-payment="Other">Other</button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Submit Button -->
-            <button type="submit" id="submitBtn" class="btn btn-primary w-full text-lg mt-2" disabled>
-                Submit Order
-            </button>
-        </form>
+                <div class="form-group">
+                    <label for="transactionId">Transaction ID / Screenshot Link</label>
+                    <input type="text" id="transactionId" name="transactionId" class="input" placeholder="Enter your transaction ID" required>
+                </div>
+                
+                <button type="submit" id="submitBtn" class="submit-btn" disabled>Submit Order</button>
+            </form>
+        </main>
     </div>
-
-    <!-- Toast Notification -->
-    <div id="toast"></div>
+    
+    <div id="toast" class="toast"></div>
 
     <script>
-        const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxhKopju5-o0XM78pqWCX_NxzBybvHnArQDNOa_PXWZJ6oCnmDZKAE-rqdXX98yU-gK/exec'; // Replace with your GAS URL
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyzv7deNHhO1DaL6opsfVyBL_YV8njEnBCebZLpDru-aBrJxGGh2LGKBHwvmLraZj5L/exec'; // <-- IMPORTANT: Replace with your Google Apps Script Web App URL
 
-        const services = {
-            "SIM/Package": [
-                { name: "ATOM 1GB", price: 999 },
-                { name: "Ooredoo 2.5GB", price: 2499 },
-                { name: "MPT 5GB", price: 4999 },
-                { name: "MyTel 10GB", price: 8000 },
-            ],
-            "Games TopUp": [
-                { name: "MLBB 100💎", price: 3000 },
-                { name: "PUBG 60 UC", price: 2500 },
-                { name: "Valorant 300VP", price: 5000 },
-                { name: "FreeFire 520💎", price: 7000 },
-            ],
-            "SMM": [
-                { name: "FB Likes (1k)", price: 5000 },
-                { name: "IG Followers (1k)", price: 8000 },
-                { name: "TikTok Views (10k)", price: 3000 },
-                { name: "YouTube Subs (100)", price: 10000 },
-            ]
-        };
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('orderForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const userIdInput = document.getElementById('userId');
+            const categoryGroup = document.getElementById('category-group');
+            const servicesContainer = document.getElementById('services-container');
+            const serviceGroup = document.getElementById('service-group');
+            const qtyInput = document.getElementById('qty');
+            const totalPriceInput = document.getElementById('totalPrice');
+            const paymentMethodGroup = document.getElementById('payment-method-group');
+            const transactionIdInput = document.getElementById('transactionId');
+            const copyPhoneBtn = document.getElementById('copyPhoneBtn');
 
-        const state = {
-            userId: null,
-            category: null,
-            service: null,
-            price: 0,
-            qty: 1,
-            paymentMethod: null,
-        };
+            const state = {
+                userId: '',
+                category: '',
+                service: '',
+                servicePrice: 0,
+                qty: 1,
+                totalPrice: 0,
+                phone: '09791134604',
+                paymentMethod: '',
+                transactionId: ''
+            };
 
-        const userIdEl = document.getElementById('userId');
-        const categoryContainer = document.getElementById('categoryContainer');
-        const serviceCard = document.getElementById('serviceCard');
-        const serviceContainer = document.getElementById('serviceContainer');
-        const priceDisplay = document.getElementById('priceDisplay');
-        const detailsCard = document.getElementById('detailsCard');
+            const services = {
+                'SIM/Package': [
+                    { name: 'Ooredoo 1GB', price: 999 },
+                    { name: 'Mytel 2GB', price: 1450 },
+                    { name: 'Telenor 5GB', price: 3500 },
+                    { name: 'MEC Tel 10GB', price: 7000 },
+                ],
+                'Games TopUp': [
+                    { name: 'MLBB 100💎', price: 2500 },
+                    { name: 'PUBG 60 UC', price: 1800 },
+                    { name: 'Valorant 300 VP', price: 5000 },
+                    { name: 'Genshin 60 GC', price: 1500 },
+                ],
+                'SMM': [
+                    { name: 'FB Likes (1k)', price: 5000 },
+                    { name: 'IG Followers (1k)', price: 8000 },
+                    { name: 'YT Subs (100)', price: 10000 },
+                    { name: 'TikTok Views (10k)', price: 3000 },
+                ]
+            };
+
+            const formatCurrency = (amount) => `${amount.toLocaleString()} MMK`;
+
+            const updateTotalPrice = () => {
+                state.qty = parseInt(qtyInput.value) || 1;
+                state.totalPrice = state.servicePrice * state.qty;
+                totalPriceInput.value = formatCurrency(state.totalPrice);
+                validateForm();
+            };
+
+            const renderServices = (category) => {
+                serviceGroup.innerHTML = '';
+                if (!services[category]) return;
+                
+                services[category].forEach(service => {
+                    const btn = document.createElement('button');
+                    btn.type = 'button';
+                    btn.className = 'btn-toggle';
+                    btn.dataset.serviceName = service.name;
+                    btn.dataset.servicePrice = service.price;
+                    btn.textContent = `${service.name} (${formatCurrency(service.price)})`;
+                    serviceGroup.appendChild(btn);
+                });
+                servicesContainer.style.display = 'block';
+            };
+
+            const setupUserId = () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                let uid = urlParams.get('uid');
+                if (uid) {
+                    localStorage.setItem('easyRechargeUserId', uid);
+                } else {
+                    uid = localStorage.getItem('easyRechargeUserId');
+                }
+                if(uid) {
+                    state.userId = uid;
+                    userIdInput.value = uid;
+                } else {
+                    userIdInput.value = 'N/A - Visit with ?uid= parameter';
+                }
+            };
+
+            const validateForm = () => {
+                const isValid = state.userId &&
+                                state.category &&
+                                state.service &&
+                                state.qty >= 1 &&
+                                state.paymentMethod &&
+                                transactionIdInput.value.trim() !== '';
+                submitBtn.disabled = !isValid;
+            };
+
+            // Event Listeners
+            categoryGroup.addEventListener('click', (e) => {
+                if (e.target.matches('.btn-toggle')) {
+                    document.querySelectorAll('#category-group .btn-toggle').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.category = e.target.dataset.category;
+                    state.service = '';
+                    state.servicePrice = 0;
+
+                    if (state.category === 'SMM') {
+                        qtyInput.readOnly = false;
+                    } else {
+                        qtyInput.readOnly = true;
+                        qtyInput.value = 1;
+                    }
+
+                    renderServices(state.category);
+                    updateTotalPrice();
+                    validateForm();
+                }
+            });
+
+            serviceGroup.addEventListener('click', (e) => {
+                if (e.target.matches('.btn-toggle')) {
+                    document.querySelectorAll('#service-group .btn-toggle').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.service = e.target.dataset.serviceName;
+                    state.servicePrice = parseInt(e.target.dataset.servicePrice);
+                    updateTotalPrice();
+                }
+            });
+
+            paymentMethodGroup.addEventListener('click', (e) => {
+                 if (e.target.matches('.btn-toggle')) {
+                    document.querySelectorAll('#payment-method-group .btn-toggle').forEach(btn => btn.classList.remove('active'));
+                    e.target.classList.add('active');
+                    state.paymentMethod = e.target.dataset.payment;
+                    validateForm();
+                }
+            });
+
+            qtyInput.addEventListener('input', updateTotalPrice);
+            transactionIdInput.addEventListener('input', validateForm);
+
+            copyPhoneBtn.addEventListener('click', () => {
+                const phoneToCopy = document.getElementById('phone').value;
+                navigator.clipboard.writeText(phoneToCopy.split(' - ')[1])
+                    .then(() => showToast('✅ Phone number copied!', 'success'))
+                    .catch(() => showToast('⚠️ Could not copy number', 'error'));
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (submitBtn.disabled) return;
+
+                submitBtn.classList.add('loading');
+                submitBtn.disabled = true;
+
+                const postData = {
+                    userId: state.userId,
+                    category: state.category,
+                    service: state.service,
+                    qty: state.qty,
+                    totalPrice: state.totalPrice,
+                    phone: state.phone,
+                    paymentMethod: state.paymentMethod,
+                    transactionId: transactionIdInput.value.trim()
+                };
+
+                try {
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        mode: 'no-cors', // Use no-cors for simple POST to GAS
+                        cache: 'no-cache',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(postData),
+                        redirect: 'follow'
+                    });
+                    
+                    // Note: With 'no-cors', we can't read the response. We assume success.
+                    // For a real production app, GAS should return a redirect.
+                    // But for this setup, we'll just show success and reset.
+                    
+                    showToast('✅ Order Submitted!', 'success');
+                    form.reset();
+                    document.querySelectorAll('.btn-toggle.active').forEach(b => b.classList.remove('active'));
+                    servicesContainer.style.display = 'none';
+                    state.service = '';
+                    state.category = '';
+                    state.paymentMethod = '';
+                    updateTotalPrice();
+                    validateForm();
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    showToast('⚠️ Failed to submit order. Please try again.', 'error');
+                } finally {
+                    submitBtn.classList.remove('loading');
+                    // We keep it disabled because the form is now invalid
+                }
+            });
+
+            const toast = document.getElementById('toast');
+            const showToast = (message, type = '') => {
+                toast.textContent = message;
+                toast.className = 'toast show';
+                if (type) toast.classList.add(type);
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            };
+
+            // Initial setup
+            setupUserId();
+            validateForm();
+        });
+    </script>
+</body>
+</html>
+
+rd');
         const paymentCard = document.getElementById('paymentCard');
         const quantityInput = document.getElementById('quantity');
         const totalPriceEl = document.getElementById('totalPrice');
